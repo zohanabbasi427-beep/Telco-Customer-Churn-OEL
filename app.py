@@ -13,7 +13,7 @@ import seaborn as sns
 st.set_page_config(page_title="Telco Customer Analytics", page_icon="📊", layout="wide")
 
 # ==============================================================================
-# CUSTOM PREMIUM BACKGROUND CSS (Webpage Background Fix)
+# CUSTOM PREMIUM BACKGROUND CSS
 # ==============================================================================
 st.markdown(
     """
@@ -28,7 +28,6 @@ st.markdown(
     div[data-testid="stNumberInput"] i {
         background-color: #ffffff !important;
     }
-    /* Fixed chart canvas container containment spacing */
     div.element-container iframe {
         width: 100% !important;
     }
@@ -38,7 +37,7 @@ st.markdown(
 )
 
 st.title("📊 Customer Churn Prediction & Segmentation System")
-st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)") [cite: 1]
+st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
 
 # ==============================================================================
 # 1. CORE PIPELINE LOADER
@@ -84,9 +83,8 @@ with col3:
     monthly_charges = st.number_input("Monthly Charges ($)", min_value=18.0, max_value=120.0, value=65.0)
     total_charges = st.number_input("Total Charges ($)", min_value=18.0, max_value=8500.0, value=780.0)
 
-# Sidebar setup matching PDF criteria
 st.sidebar.markdown("### 🛠️ Model Parameters Configuration")
-clustering_algo = st.sidebar.selectbox("Choose Clustering Technique", ["K-Means Clustering", "Hierarchical Clustering"]) [cite: 7]
+clustering_algo = st.sidebar.selectbox("Choose Clustering Technique", ["K-Means Clustering", "Hierarchical Clustering"])
 
 # ==============================================================================
 # 3. INTERACTIVE ENGINE WITH STRATEGIC VARIANCE PIPELINE
@@ -172,28 +170,26 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             st.info(f"📁 **{algo_tag} #{cluster_pred}**")
             
         # ==============================================================================
-        # 5. VISUALIZATIONS & REPORT PARAMETERS (Layout-Responsive Patch)
+        # 5. VISUALIZATIONS & PARAMETERS (Fixed Layout)
         # ==============================================================================
         st.markdown("---")
-        st.subheader("📊 System Performance & Behavioral Visualizations") [cite: 11]
+        st.subheader("📊 System Performance & Behavioral Visualizations")
         
-        # Defining exact 50-50 wide matrix columns split
         vis_col1, vis_col2 = st.columns(2)
         sns.set_theme(style="whitegrid") 
         
         with vis_col1:
-            st.markdown("#### Supervised Learning Models Comparison") [cite: 7]
-            models_list = ['Logistic Reg', 'Decision Tree', 'Random Forest', 'KNN', 'Naive Bayes'] [cite: 7]
+            st.markdown("#### Supervised Learning Models Comparison")
+            models_list = ['Logistic Reg', 'Decision Tree', 'Random Forest', 'KNN', 'Naive Bayes']
             accuracy_scores = [0.79, 0.74, 0.78, 0.76, 0.69]
             
-            # Use responsive tight layout configurations to avoid side-squeezing
             fig1, ax1 = plt.subplots(figsize=(6.5, 4.2), facecolor='#f4f6f9')
             ax1.set_facecolor('#ffffff') 
             
             sns.barplot(x=models_list, y=accuracy_scores, palette="Blues_r", ax=ax1)
-            ax1.set_title("OEL Supervised Classifiers Accuracy Comparison", fontsize=11, fontweight='bold', color='#1e1e1e') [cite: 11]
-            ax1.set_xlabel("Algorithms", fontsize=9, fontweight='bold', color='#1e1e1e') [cite: 11]
-            ax1.set_ylabel("Accuracy Score (0 - 1.0)", fontsize=9, fontweight='bold', color='#1e1e1e') [cite: 11]
+            ax1.set_title("OEL Supervised Classifiers Accuracy Comparison", fontsize=11, fontweight='bold', color='#1e1e1e')
+            ax1.set_xlabel("Algorithms", fontsize=9, fontweight='bold', color='#1e1e1e')
+            ax1.set_ylabel("Accuracy Score (0 - 1.0)", fontsize=9, fontweight='bold', color='#1e1e1e')
             ax1.set_ylim(0, 1.0)
             ax1.tick_params(colors='#1e1e1e', labelsize=9)
             
@@ -203,10 +199,10 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             fig1.tight_layout()
             st.pyplot(fig1, use_container_width=True)
             plt.close(fig1)
-            st.caption("Figure 1: Benchmark evaluation metrics comparing supervised classifier performance.") [cite: 11]
+            st.caption("Figure 1: Benchmark evaluation metrics comparing supervised classifier performance.")
 
         with vis_col2:
-            st.markdown(f"#### Unsupervised Space Mapping ({clustering_algo})") [cite: 7]
+            st.markdown(f"#### Unsupervised Space Mapping ({clustering_algo})")
             np.random.seed(42)
             
             c0 = np.random.normal(loc=[-0.8, -0.6], scale=0.3, size=(40, 2))
@@ -224,9 +220,9 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             
             ax2.scatter([s_tenure], [s_monthly], c='#ff3b30', marker='X', s=220, edgecolor='black', label='Current Track', zorder=5)
             
-            ax2.set_title(f"Segmentation Mapping via Vector Clusters ({clustering_algo})", fontsize=11, fontweight='bold', color='#1e1e1e') [cite: 11]
-            ax2.set_xlabel("Standardized Tenure Space Dimension", fontsize=9, fontweight='bold', color='#1e1e1e') [cite: 11]
-            ax2.set_ylabel("Standardized Monthly Charges Space", fontsize=9, fontweight='bold', color='#1e1e1e') [cite: 11]
+            ax2.set_title(f"Segmentation Mapping via Vector Clusters ({clustering_algo})", fontsize=11, fontweight='bold', color='#1e1e1e')
+            ax2.set_xlabel("Standardized Tenure Space Dimension", fontsize=9, fontweight='bold', color='#1e1e1e')
+            ax2.set_ylabel("Standardized Monthly Charges Space", fontsize=9, fontweight='bold', color='#1e1e1e')
             ax2.tick_params(colors='#1e1e1e', labelsize=9)
             
             legend = ax2.legend(loc='upper left', fontsize='small', frameon=True)
@@ -236,23 +232,23 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             fig2.tight_layout()
             st.pyplot(fig2, use_container_width=True)
             plt.close(fig2)
-            st.caption(f"Figure 2: Spatial cluster analysis matching selected {clustering_algo} module.") [cite: 11]
+            st.caption(f"Figure 2: Spatial cluster analysis matching selected {clustering_algo} module.")
 
-        # Lower Row for Full-Width Evaluation Table block to prevent squishing
+        # Lower Full-Width Block for Evaluation Table
         st.markdown("---")
         tbl_col, ins_col = st.columns([1.1, 0.9])
         
         with tbl_col:
-            st.markdown("##### Detailed Target Model Evaluation Parameters Matrix") [cite: 7]
+            st.markdown("##### Detailed Target Model Evaluation Parameters Matrix")
             metrics_data = {
-                'Metric Parameter': ['Accuracy', 'Precision', 'Recall', 'F1-Score'], [cite: 7]
+                'Metric Parameter': ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
                 'Logistic Regression (Best)': ['79.00%', '77.20%', '81.40%', '79.25%'],
                 'Random Forest': ['78.00%', '76.90%', '79.10%', '77.98%']
             }
             st.table(pd.DataFrame(metrics_data))
             
         with ins_col:
-            st.markdown("##### 💡 Strategic Business Insights & Recommendations") [cite: 11]
+            st.markdown("##### 💡 Strategic Business Insights & Recommendations")
             if prediction == 1:
                 st.warning(
                     "**Operational Action Directive:**\n"
