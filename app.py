@@ -36,7 +36,7 @@ st.markdown(
 )
 
 st.title("📊 Customer Churn Prediction & Segmentation System")
-st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
+st.markdown("OWNER ABDUL AHAD")
 
 # 1. CORE PIPELINE LOADER
 @st.cache_resource
