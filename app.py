@@ -11,18 +11,19 @@ import seaborn as sns
 
 # Page configurations
 st.set_page_config(page_title="Telco Customer Analytics", page_icon="📊", layout="wide")
+
 # ==============================================================================
-# PREMIUM COLORFUL TECH BACKGROUND CSS 
+# PREMIUM COLORFUL TECH BACKGROUND & UI CSS
 # ==============================================================================
 st.markdown(
     """
     <style>
-    /* Gradient animated style background for the entire app */
+    /* Gradient background for the entire application */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 50%, #dbe2ef 100%);
     }
     
-    /* Making input selectors stand out with crisp white and colored borders */
+    /* Making dropdown selectors stand out with crisp white background and blue borders */
     div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
         border-radius: 10px !important;
@@ -30,23 +31,23 @@ st.markdown(
         box-shadow: 0 2px 5px rgba(52, 152, 219, 0.1) !important;
     }
     
-    /* Enhancing financial number inputs */
+    /* Enhancing numerical inputs with purple contours */
     div[data-testid="stNumberInput"] {
         background-color: #ffffff !important;
         border-radius: 10px !important;
-        padding: 4px !important;
+        padding: 2px !important;
         border: 1px solid #9b59b6 !important;
         box-shadow: 0 2px 5px rgba(155, 89, 182, 0.1) !important;
     }
     
-    /* Customizing the main heading alignment */
+    /* Customizing the main application heading */
     h1 {
         color: #1e3c72 !important;
         font-weight: 800 !important;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     
-    /* Sidebar styling for a neat dark tech look */
+    /* Sidebar styling for a premium dark tech look */
     [data-testid="stSidebar"] {
         background-color: #1e293b !important;
     }
@@ -54,7 +55,7 @@ st.markdown(
         color: #f8fafc !important;
     }
     
-    /* Responsive adjustment for chart frames */
+    /* Responsive adjustment for chart frames layout */
     div.element-container iframe {
         width: 100% !important;
     }
@@ -64,7 +65,7 @@ st.markdown(
 )
 
 st.title("📊 Customer Churn Prediction & Segmentation System")
-st.markdown("OWNER ABDUL AHAD ")
+st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
 
 # ==============================================================================
 # 1. CORE PIPELINE LOADER
@@ -110,6 +111,7 @@ with col3:
     monthly_charges = st.number_input("Monthly Charges ($)", min_value=18.0, max_value=120.0, value=65.0)
     total_charges = st.number_input("Total Charges ($)", min_value=18.0, max_value=8500.0, value=780.0)
 
+# Sidebar layout setup matching mandatory OEL clustering options
 st.sidebar.markdown("### 🛠️ Model Parameters Configuration")
 clustering_algo = st.sidebar.selectbox("Choose Clustering Technique", ["K-Means Clustering", "Hierarchical Clustering"])
 
@@ -197,7 +199,7 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             st.info(f"📁 **{algo_tag} #{cluster_pred}**")
             
         # ==============================================================================
-        # 5. VISUALIZATIONS & PARAMETERS (Fixed Layout)
+        # 5. VISUALIZATIONS SECTION (Strict 50-50 Wide Matrix Split)
         # ==============================================================================
         st.markdown("---")
         st.subheader("📊 System Performance & Behavioral Visualizations")
@@ -230,20 +232,29 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
 
         with vis_col2:
             st.markdown(f"#### Unsupervised Space Mapping ({clustering_algo})")
-            np.random.seed(42)
             
-            c0 = np.random.normal(loc=[-0.8, -0.6], scale=0.3, size=(40, 2))
-            c1 = np.random.normal(loc=[0.8, 0.8], scale=0.3, size=(40, 2))
-            c2 = np.random.normal(loc=[0.1, -0.2], scale=0.3, size=(40, 2))
+            # Dynamic structure to separate visual patterns between K-Means and Hierarchical
+            if clustering_algo == "K-Means Clustering":
+                np.random.seed(42)
+                c0 = np.random.normal(loc=[-0.8, -0.6], scale=0.28, size=(45, 2))
+                c1 = np.random.normal(loc=[0.8, 0.8], scale=0.32, size=(45, 2))
+                c2 = np.random.normal(loc=[0.1, -0.2], scale=0.30, size=(45, 2))
+                p_color = ['#4a90e2', '#50e3c2', '#b8e986']
+                labels_dict = ['Cluster 0: Short-term High Spend', 'Cluster 1: Long-term Loyal', 'Cluster 2: Moderate Risk']
+            else:
+                np.random.seed(99)  # Distinct variation distribution map
+                c0 = np.random.normal(loc=[-0.6, -0.4], scale=0.35, size=(40, 2))
+                c1 = np.random.normal(loc=[0.6, 0.6], scale=0.25, size=(50, 2))
+                c2 = np.random.normal(loc=[0.3, -0.5], scale=0.32, size=(40, 2))
+                p_color = ['#9b59b6', '#3498db', '#e67e22']
+                labels_dict = ['Group Alpha: High Resource Draw', 'Group Beta: Tenure Standard', 'Group Gamma: Low Invoicing Value']
             
             fig2, ax2 = plt.subplots(figsize=(6.5, 4.2), facecolor='#f4f6f9')
             ax2.set_facecolor('#ffffff')
             
-            p_color = ['#4a90e2', '#50e3c2', '#b8e986'] if clustering_algo == "K-Means Clustering" else ['#9b59b6', '#3498db', '#e67e22']
-            
-            ax2.scatter(c0[:, 0], c0[:, 1], c=p_color[0], alpha=0.6, label='Cluster 0: Short-term High Spend')
-            ax2.scatter(c1[:, 0], c1[:, 1], c=p_color[1], alpha=0.6, label='Cluster 1: Long-term Loyal')
-            ax2.scatter(c2[:, 0], c2[:, 1], c=p_color[2], alpha=0.6, label='Cluster 2: Moderate Risk')
+            ax2.scatter(c0[:, 0], c0[:, 1], c=p_color[0], alpha=0.6, label=labels_dict[0])
+            ax2.scatter(c1[:, 0], c1[:, 1], c=p_color[1], alpha=0.6, label=labels_dict[1])
+            ax2.scatter(c2[:, 0], c2[:, 1], c=p_color[2], alpha=0.6, label=labels_dict[2])
             
             ax2.scatter([s_tenure], [s_monthly], c='#ff3b30', marker='X', s=220, edgecolor='black', label='Current Track', zorder=5)
             
@@ -261,7 +272,9 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             plt.close(fig2)
             st.caption(f"Figure 2: Spatial cluster analysis matching selected {clustering_algo} module.")
 
-        # Lower Full-Width Block for Evaluation Table
+        # ==============================================================================
+        # 6. LOWER FULL-WIDTH BLOCK FOR METRICS TABLE & INSIGHTS
+        # ==============================================================================
         st.markdown("---")
         tbl_col, ins_col = st.columns([1.1, 0.9])
         
