@@ -11,23 +11,50 @@ import seaborn as sns
 
 # Page configurations
 st.set_page_config(page_title="Telco Customer Analytics", page_icon="📊", layout="wide")
-
 # ==============================================================================
-# CUSTOM PREMIUM BACKGROUND CSS
+# PREMIUM COLORFUL TECH BACKGROUND CSS 
 # ==============================================================================
 st.markdown(
     """
     <style>
+    /* Gradient animated style background for the entire app */
     .stApp {
-        background-color: #f4f6f9;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 50%, #dbe2ef 100%);
     }
+    
+    /* Making input selectors stand out with crisp white and colored borders */
     div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
+        border: 1px solid #3498db !important;
+        box-shadow: 0 2px 5px rgba(52, 152, 219, 0.1) !important;
     }
-    div[data-testid="stNumberInput"] i {
+    
+    /* Enhancing financial number inputs */
+    div[data-testid="stNumberInput"] {
         background-color: #ffffff !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        border: 1px solid #9b59b6 !important;
+        box-shadow: 0 2px 5px rgba(155, 89, 182, 0.1) !important;
     }
+    
+    /* Customizing the main heading alignment */
+    h1 {
+        color: #1e3c72 !important;
+        font-weight: 800 !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* Sidebar styling for a neat dark tech look */
+    [data-testid="stSidebar"] {
+        background-color: #1e293b !important;
+    }
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] h3 {
+        color: #f8fafc !important;
+    }
+    
+    /* Responsive adjustment for chart frames */
     div.element-container iframe {
         width: 100% !important;
     }
@@ -37,7 +64,7 @@ st.markdown(
 )
 
 st.title("📊 Customer Churn Prediction & Segmentation System")
-st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
+st.markdown("OWNER ABDUL AHAD ")
 
 # ==============================================================================
 # 1. CORE PIPELINE LOADER
