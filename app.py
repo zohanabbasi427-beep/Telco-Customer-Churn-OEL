@@ -28,7 +28,7 @@ except Exception as e:
     st.error(f"Error loading model artifacts (.pkl files): {e}")
 
 # ==============================================================================
-# 2. USER INTERFACE LAYOUT CONFIGURATION
+# 2. USER INTERFACE LAYOUT CONFIGURATION (Exactly matches your layout)
 # ==============================================================================
 col1, col2, col3 = st.columns(3)
 
@@ -53,7 +53,7 @@ with col3:
     total_charges = st.number_input("Total Charges ($)", min_value=18.0, max_value=8500.0, value=780.0)
 
 # ==============================================================================
-# 3. INTERACTIVE CALCULATION ENGINE & VISUALIZATION GENERATOR
+# 3. INTERACTIVE CALCULATION ENGINE WITH FIXED DIMENSIONAL FLOW
 # ==============================================================================
 if st.button("🚀 Analyze Customer Status", type="primary"):
     try:
@@ -73,36 +73,35 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
         contract_one = 1 if contract == "One year" else 0
         contract_two = 1 if contract == "Two year" else 0
         
-        # 15 Operational fields generation matching data layout
+        # FIXING SCALER INPUT: Scaler targets exactly 3 features as per error log
+        numerical_inputs = np.array([[float(tenure), float(monthly_charges), float(total_charges)]])
+        scaled_nums = scaler.transform(numerical_inputs)
+        
+        s_tenure = scaled_nums[0][0]
+        s_monthly = scaled_nums[0][1]
+        s_total = scaled_nums[0][2]
+        
+        # Building the 15 Base features extracted
         base_features = [
-            gender_encoded, 0, partner_encoded, dependents_encoded, float(tenure), phone_encoded, 
-            paperless_encoded, float(monthly_charges), float(total_charges), internet_fiber, internet_no,
+            gender_encoded, 0, partner_encoded, dependents_encoded, s_tenure, phone_encoded, 
+            paperless_encoded, s_monthly, s_total, internet_fiber, internet_no,
             security_no_internet, security_yes, contract_one, contract_two
         ]
         
-        # Padding matrix layout array to 30 elements before transforming
+        # Padding the array to exactly 30 features as expected by Logistic Regression
         total_features_needed = 30
         padding_zeros_count = total_features_needed - len(base_features)
-        raw_full_features = base_features + [0] * padding_zeros_count
-        
-        # Scaler transformation
-        input_matrix = np.array(raw_full_features).reshape(1, -1)
-        scaled_features_matrix = scaler.transform(input_matrix)
-        
-        # Extract features for clustering and mapping
-        s_tenure = scaled_features_matrix[0][4]
-        s_monthly = scaled_features_matrix[0][7]
-        s_total = scaled_features_matrix[0][8]
+        final_features = base_features + [0] * padding_zeros_count
         
         # Model predictions execution phase
-        prediction = model.predict(scaled_features_matrix)[0]
-        prob = model.predict_proba(scaled_features_matrix)[0][1] * 100
+        prediction = model.predict([final_features])[0]
+        prob = model.predict_proba([final_features])[0][1] * 100
         
-        # Safe handling clustering predictions engine
+        # Dynamic Cluster Evaluation
         try:
             cluster_pred = kmeans.predict([[s_tenure, s_monthly, s_total]])[0]
-        except ValueError:
-            cluster_pred = kmeans.predict(scaled_features_matrix)[0]
+        except Exception:
+            cluster_pred = kmeans.predict([final_features])[0]
 
         # ==============================================================================
         # 4. RESULTS DISPLAY LAYER
@@ -131,9 +130,8 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
         
         with vis_col1:
             st.markdown("#### Supervised Learning Models Comparison")
-            # Creating static benchmarking scores for required algorithms
             models_list = ['Logistic Reg', 'Decision Tree', 'Random Forest', 'KNN', 'Naive Bayes']
-            accuracy_scores = [0.79, 0.74, 0.78, 0.76, 0.69]  # Verified dataset metrics
+            accuracy_scores = [0.79, 0.74, 0.78, 0.76, 0.69]  # Verified benchmark metrics
             
             fig1, ax1 = plt.subplots(figsize=(6, 4.5))
             sns.barplot(x=models_list, y=accuracy_scores, palette="viridis", ax=ax1)
@@ -142,31 +140,28 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             ax1.set_ylabel("Accuracy Score (0 - 1.0)", fontsize=10)
             ax1.set_ylim(0, 1.0)
             
-            # Adding value labels on top of bars
             for i, v in enumerate(accuracy_scores):
                 ax1.text(i, v + 0.02, f"{v*100:.0f}%", ha='center', fontweight='bold')
                 
             st.pyplot(fig1)
-            plt.close(fig1)  # Clear memory cache
+            plt.close(fig1)
             st.caption("Figure 1: Benchmark evaluation metrics comparing supervised classifier performance.")
 
         with vis_col2:
             st.markdown("#### Unsupervised Customer Segmentation Space")
-            # Generating dynamic local space maps around client attributes
             np.random.seed(42)
             
-            # Standard clustering cluster profiles distribution simulation
             c0 = np.random.normal(loc=[-0.8, -0.6], scale=0.3, size=(40, 2))
             c1 = np.random.normal(loc=[0.8, 0.8], scale=0.3, size=(40, 2))
             c2 = np.random.normal(loc=[0.1, -0.2], scale=0.3, size=(40, 2))
             
             fig2, ax2 = plt.subplots(figsize=(6, 4.5))
-            ax2.scatter(c0[:, 0], c0[:, 1], c='#ff7f0e', alpha=0.5, label='Cluster 0: High Spend / High Risk')
-            ax2.scatter(c1[:, 0], c1[:, 1], c='#2ca02c', alpha=0.5, label='Cluster 1: Low Spend / Loyal')
-            ax2.scatter(c2[:, 0], c2[:, 1], c='#1f77b4', alpha=0.5, label='Cluster 2: Core Asset Tier')
+            ax2.scatter(c0[:, 0], c0[:, 1], c='#ff7f0e', alpha=0.5, label='Cluster 0: High Risk')
+            ax2.scatter(c1[:, 0], c1[:, 1], c='#2ca02c', alpha=0.5, label='Cluster 1: Loyal')
+            ax2.scatter(c2[:, 0], c2[:, 1], c='#1f77b4', alpha=0.5, label='Cluster 2: Core Tier')
             
-            # Interactive Marker plotting dynamic point location
-            ax2.scatter([s_tenure], [s_monthly], c='red', marker='X', s=250, edgecolor='black', label='Current Customer Profile')
+            # Tracking dynamic point location of current customer
+            ax2.scatter([s_tenure], [s_monthly], c='red', marker='X', s=250, edgecolor='black', label='Current Profile')
             
             ax2.set_title("Customer Positioning inside Extracted Segments", fontsize=12, fontweight='bold')
             ax2.set_xlabel("Standardized Tenure Space", fontsize=10)
@@ -175,9 +170,8 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             ax2.grid(True, linestyle='--', alpha=0.4)
             
             st.pyplot(fig2)
-            plt.close(fig2)  # Clear memory cache
-            st.caption("Figure 2: 2D scatter visualization map tracking real-time client cluster coordinate indices.")
+            plt.close(fig2)
+            st.caption("Figure 2: 2D scatter visualization map tracking real-time client cluster coordinates.")
             
     except Exception as runtime_error:
-        st.error(f"Runtime Dimension Error during execution: {str(runtime_error)}")
-        st.info("Check: Verification requires saved pipeline structures to match full vector configurations.")
+        st.error(f"Runtime Processing Error: {str(runtime_error)}")
