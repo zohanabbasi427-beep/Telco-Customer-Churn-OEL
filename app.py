@@ -1,3 +1,23 @@
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #121824; /* Dark Cyber Blue Background */
+        color: #ffffff !important;
+    }
+    h1, h2, h3, h4, h5, h6, label, p, span {
+        color: #ffffff !important; /* White Text for all elements */
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Aur Matplotlib ke plots me: facecolor='#121824', ax.set_facecolor('#1e293b') aur color='white' set kar dena!
 import streamlit as st
 import pandas as pd
 import numpy as np
