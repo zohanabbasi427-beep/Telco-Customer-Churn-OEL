@@ -12,7 +12,6 @@ import seaborn as sns
 # Page configurations
 st.set_page_config(page_title="Telco Customer Analytics", page_icon="📊", layout="wide")
 st.title("📊 Customer Churn Prediction & Segmentation System")
-st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
 
 # 1. CORE PIPELINE LOADER
 @st.cache_resource
