@@ -11,7 +11,32 @@ import seaborn as sns
 
 # Page configurations
 st.set_page_config(page_title="Telco Customer Analytics", page_icon="📊", layout="wide")
+
+# ==============================================================================
+# CUSTOM PREMIUM BACKGROUND CSS (Webpage Background Fix)
+# ==============================================================================
+st.markdown(
+    """
+    <style>
+    /* Pure website background color change */
+    .stApp {
+        background-color: #f4f6f9;
+    }
+    /* Input box backgrounds and text alignment styling */
+    div[data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stNumberInput"] i {
+        background-color: #ffffff !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("📊 Customer Churn Prediction & Segmentation System")
+st.markdown("### IQRA University — Introduction to Machine Learning Lab (AIC-221L)")
 
 # 1. CORE PIPELINE LOADER
 @st.cache_resource
@@ -27,7 +52,7 @@ except Exception as e:
     st.error(f"Error loading model artifacts (.pkl files): {e}")
 
 # ==============================================================================
-# 2. USER INTERFACE LAYOUT CONFIGURATION (Exactly matches your layout)
+# 2. USER INTERFACE LAYOUT CONFIGURATION
 # ==============================================================================
 col1, col2, col3 = st.columns(3)
 
@@ -56,7 +81,6 @@ with col3:
 # ==============================================================================
 if st.button("🚀 Analyze Customer Status", type="primary"):
     try:
-        # Binary categorical encoding processing mapping
         gender_encoded = 1 if gender == "Male" else 0
         partner_encoded = 1 if partner == "Yes" else 0
         dependents_encoded = 1 if dependents == "Yes" else 0
@@ -72,7 +96,7 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
         contract_one = 1 if contract == "One year" else 0
         contract_two = 1 if contract == "Two year" else 0
         
-        # FIXING SCALER INPUT: Scaler targets exactly 3 features as per error log
+        # Scaling numerical inputs using the 3-feature Standard Scaler
         numerical_inputs = np.array([[float(tenure), float(monthly_charges), float(total_charges)]])
         scaled_nums = scaler.transform(numerical_inputs)
         
@@ -80,23 +104,19 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
         s_monthly = scaled_nums[0][1]
         s_total = scaled_nums[0][2]
         
-        # Building the 15 Base features extracted
         base_features = [
             gender_encoded, 0, partner_encoded, dependents_encoded, s_tenure, phone_encoded, 
             paperless_encoded, s_monthly, s_total, internet_fiber, internet_no,
             security_no_internet, security_yes, contract_one, contract_two
         ]
         
-        # Padding the array to exactly 30 features as expected by Logistic Regression
         total_features_needed = 30
         padding_zeros_count = total_features_needed - len(base_features)
         final_features = base_features + [0] * padding_zeros_count
         
-        # Model predictions execution phase
         prediction = model.predict([final_features])[0]
         prob = model.predict_proba([final_features])[0][1] * 100
         
-        # Dynamic Cluster Evaluation
         try:
             cluster_pred = kmeans.predict([[s_tenure, s_monthly, s_total]])[0]
         except Exception:
@@ -120,27 +140,32 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             st.info(f"📁 **Cluster Profile #{cluster_pred}**")
             
         # ==============================================================================
-        # 5. DYNAMIC GRAPHS & VISUALIZATIONS SECTION (Strict OEL Compliance)
+        # 5. GRAPHS SECTION MATCHING THE LIGHT BACKGROUND
         # ==============================================================================
         st.markdown("---")
         st.subheader("📊 System Performance & Behavioral Visualizations")
         
         vis_col1, vis_col2 = st.columns(2)
+        sns.set_theme(style="whitegrid") 
         
         with vis_col1:
             st.markdown("#### Supervised Learning Models Comparison")
             models_list = ['Logistic Reg', 'Decision Tree', 'Random Forest', 'KNN', 'Naive Bayes']
-            accuracy_scores = [0.79, 0.74, 0.78, 0.76, 0.69]  # Verified benchmark metrics
+            accuracy_scores = [0.79, 0.74, 0.78, 0.76, 0.69]
             
-            fig1, ax1 = plt.subplots(figsize=(6, 4.5))
-            sns.barplot(x=models_list, y=accuracy_scores, palette="viridis", ax=ax1)
-            ax1.set_title("OEL Supervised Classifiers Accuracy Comparison", fontsize=12, fontweight='bold')
-            ax1.set_xlabel("Algorithms", fontsize=10)
-            ax1.set_ylabel("Accuracy Score (0 - 1.0)", fontsize=10)
+            # #f4f6f9 blends perfectly with website background color
+            fig1, ax1 = plt.subplots(figsize=(6, 4.5), facecolor='#f4f6f9')
+            ax1.set_facecolor('#ffffff') 
+            
+            sns.barplot(x=models_list, y=accuracy_scores, palette="Blues_r", ax=ax1)
+            ax1.set_title("OEL Supervised Classifiers Accuracy Comparison", fontsize=12, fontweight='bold', color='#1e1e1e')
+            ax1.set_xlabel("Algorithms", fontsize=10, fontweight='bold', color='#1e1e1e')
+            ax1.set_ylabel("Accuracy Score (0 - 1.0)", fontsize=10, fontweight='bold', color='#1e1e1e')
             ax1.set_ylim(0, 1.0)
+            ax1.tick_params(colors='#1e1e1e')
             
             for i, v in enumerate(accuracy_scores):
-                ax1.text(i, v + 0.02, f"{v*100:.0f}%", ha='center', fontweight='bold')
+                ax1.text(i, v + 0.02, f"{v*100:.0f}%", ha='center', fontweight='bold', color='#1e1e1e')
                 
             st.pyplot(fig1)
             plt.close(fig1)
@@ -154,19 +179,23 @@ if st.button("🚀 Analyze Customer Status", type="primary"):
             c1 = np.random.normal(loc=[0.8, 0.8], scale=0.3, size=(40, 2))
             c2 = np.random.normal(loc=[0.1, -0.2], scale=0.3, size=(40, 2))
             
-            fig2, ax2 = plt.subplots(figsize=(6, 4.5))
-            ax2.scatter(c0[:, 0], c0[:, 1], c='#ff7f0e', alpha=0.5, label='Cluster 0: High Risk')
-            ax2.scatter(c1[:, 0], c1[:, 1], c='#2ca02c', alpha=0.5, label='Cluster 1: Loyal')
-            ax2.scatter(c2[:, 0], c2[:, 1], c='#1f77b4', alpha=0.5, label='Cluster 2: Core Tier')
+            fig2, ax2 = plt.subplots(figsize=(6, 4.5), facecolor='#f4f6f9')
+            ax2.set_facecolor('#ffffff')
             
-            # Tracking dynamic point location of current customer
-            ax2.scatter([s_tenure], [s_monthly], c='red', marker='X', s=250, edgecolor='black', label='Current Profile')
+            ax2.scatter(c0[:, 0], c0[:, 1], c='#4a90e2', alpha=0.6, label='Cluster 0: High Risk')
+            ax2.scatter(c1[:, 0], c1[:, 1], c='#50e3c2', alpha=0.6, label='Cluster 1: Loyal')
+            ax2.scatter(c2[:, 0], c2[:, 1], c='#b8e986', alpha=0.6, label='Cluster 2: Core Tier')
             
-            ax2.set_title("Customer Positioning inside Extracted Segments", fontsize=12, fontweight='bold')
-            ax2.set_xlabel("Standardized Tenure Space", fontsize=10)
-            ax2.set_ylabel("Standardized Monthly Charges Space", fontsize=10)
-            ax2.legend(loc='upper left', fontsize='small')
-            ax2.grid(True, linestyle='--', alpha=0.4)
+            ax2.scatter([s_tenure], [s_monthly], c='#ff3b30', marker='X', s=250, edgecolor='black', label='Current Profile', zorder=5)
+            
+            ax2.set_title("Customer Positioning inside Extracted Segments", fontsize=12, fontweight='bold', color='#1e1e1e')
+            ax2.set_xlabel("Standardized Tenure Space", fontsize=10, fontweight='bold', color='#1e1e1e')
+            ax2.set_ylabel("Standardized Monthly Charges Space", fontsize=10, fontweight='bold', color='#1e1e1e')
+            
+            legend = ax2.legend(loc='upper left', fontsize='small', frameon=True)
+            legend.get_frame().set_facecolor('#ffffff')
+            ax2.grid(True, linestyle='--', alpha=0.5, color='#e0e0e0')
+            ax2.tick_params(colors='#1e1e1e')
             
             st.pyplot(fig2)
             plt.close(fig2)
